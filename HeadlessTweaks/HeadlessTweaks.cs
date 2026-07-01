@@ -161,6 +161,15 @@ namespace HeadlessTweaks
             () => true
         );
 
+        /// <summary>
+        /// Disables the interactive commandline.
+        /// </summary>
+        [AutoRegisterConfigKey]
+        public static readonly ModConfigurationKey<bool> DisableInteractivePrompt = new(
+            "DisableInteractivePrompt",
+            "Disables interactive console command behavior. Useful if you have no direct stdin access to your executable (i.e. systemd/Windows service). Requires a restart to take effect",
+            () => false);
+
         public override void OnEngineInit()
         {
             config = GetConfiguration();
@@ -200,6 +209,11 @@ namespace HeadlessTweaks
             MessageCommands.Init();
             AutoInviteOptOut.Init(harmony);
             SmartAutosave.Init(harmony);
+
+            if (config.GetValue(DisableInteractivePrompt))
+                DisableInteractiveCommandLine.Init(harmony);
+            else
+                Debug("Not applying non-interactive command line patch");
         }
     }
 }
