@@ -1,9 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-
 using FrooxEngine.Headless;
-
 using HarmonyLib;
 
 namespace HeadlessTweaks
@@ -16,7 +14,10 @@ namespace HeadlessTweaks
         /// <summary>
         /// <see cref="ConditionalWeakTable{TKey, TValue}"/> of seen <see cref="CommandHandler"/> instances to <see cref="TaskCompletionSource"/>s that asynchronously mimic the behavior of their "stopProcessing" flag. MUST be <see langword="lock"/>ed before usage.
         /// </summary>
-        static readonly ConditionalWeakTable<CommandHandler, TaskCompletionSource> StopProcessingFlags = new ConditionalWeakTable<CommandHandler, TaskCompletionSource>();
+        static readonly ConditionalWeakTable<
+            CommandHandler,
+            TaskCompletionSource
+        > StopProcessingFlags = new ConditionalWeakTable<CommandHandler, TaskCompletionSource>();
 
         /// <summary>
         /// Applies the <see cref="DisableInteractiveCommandLine"/> patch.
@@ -27,12 +28,22 @@ namespace HeadlessTweaks
             HeadlessTweaks.Msg("Applying non-interative command line patch...");
 
             var thisType = typeof(DisableInteractiveCommandLine);
-            var processCommandsPrefix = thisType.GetMethod(nameof(ProcessCommandsPrefix), BindingFlags.NonPublic | BindingFlags.Static);
-            var stopProcessingPostfix = thisType.GetMethod(nameof(StopProcessingPostfix), BindingFlags.NonPublic | BindingFlags.Static);
+            var processCommandsPrefix = thisType.GetMethod(
+                nameof(ProcessCommandsPrefix),
+                BindingFlags.NonPublic | BindingFlags.Static
+            );
+            var stopProcessingPostfix = thisType.GetMethod(
+                nameof(StopProcessingPostfix),
+                BindingFlags.NonPublic | BindingFlags.Static
+            );
 
             var commandHandlerType = typeof(CommandHandler);
-            var processCommands = commandHandlerType.GetMethod(nameof(CommandHandler.ProcessCommands));
-            var stopProcessing = commandHandlerType.GetMethod(nameof(CommandHandler.StopProcessing));
+            var processCommands = commandHandlerType.GetMethod(
+                nameof(CommandHandler.ProcessCommands)
+            );
+            var stopProcessing = commandHandlerType.GetMethod(
+                nameof(CommandHandler.StopProcessing)
+            );
 
             harmony.Patch(processCommands, prefix: new HarmonyMethod(processCommandsPrefix));
             harmony.Patch(stopProcessing, postfix: new HarmonyMethod(stopProcessingPostfix));
@@ -50,7 +61,8 @@ namespace HeadlessTweaks
             HeadlessTweaks.Msg("Interative command line requested, skipping...");
             if (!GetOrCreateTcs(__instance, out var flag))
                 HeadlessTweaks.Error(
-                    $"By the time {nameof(ProcessCommandsPrefix)} ran, there was already a {nameof(TaskCompletionSource)} for the registered instance! Have the mod authors look at this as something has changed under the hood!");
+                    $"By the time {nameof(ProcessCommandsPrefix)} ran, there was already a {nameof(TaskCompletionSource)} for the registered instance! Have the mod authors look at this as something has changed under the hood!"
+                );
 
             __result = flag.Task;
             return false;
@@ -66,10 +78,13 @@ namespace HeadlessTweaks
             HeadlessTweaks.Msg("Interative command line stop requested, completing Task...");
             if (GetOrCreateTcs(__instance, out var flag))
                 HeadlessTweaks.Error(
-                    $"{nameof(CommandHandler.StopProcessing)} was called before the {nameof(ProcessCommandsPrefix)} for a {nameof(CommandHandler)} instance! Have the mod authors look at this as something has changed under the hood!");
+                    $"{nameof(CommandHandler.StopProcessing)} was called before the {nameof(ProcessCommandsPrefix)} for a {nameof(CommandHandler)} instance! Have the mod authors look at this as something has changed under the hood!"
+                );
 
             if (!flag.TrySetResult())
-                HeadlessTweaks.Warn($"StopProcessing was called multiple times for the same {nameof(CommandHandler)} instance? Not a problem, but curious");
+                HeadlessTweaks.Warn(
+                    $"StopProcessing was called multiple times for the same {nameof(CommandHandler)} instance? Not a problem, but curious"
+                );
         }
 
         /// <summary>
@@ -78,7 +93,10 @@ namespace HeadlessTweaks
         /// <param name="instance">The executing <see cref="CommandHandler"/> instance.</param>
         /// <param name="taskCompletionSource">The <see cref="TaskCompletionSource"/> to use for the <paramref name="instance"/>.</param>
         /// <returns><see langword="true"/> if <paramref name="taskCompletionSource"/> was created as a result of this call, <see langword="false"/> otherwise.</returns>
-        static bool GetOrCreateTcs(CommandHandler instance, out TaskCompletionSource taskCompletionSource)
+        static bool GetOrCreateTcs(
+            CommandHandler instance,
+            out TaskCompletionSource taskCompletionSource
+        )
         {
             bool result;
             lock (StopProcessingFlags)
@@ -89,7 +107,9 @@ namespace HeadlessTweaks
                     // Use RunContinuationsAsynchronously to prevent calls to StopProcessing from potentially
                     // triggering the side-effects of ProcessCommands asynchronously completing inline
                     // which can _potentially_ cause breaking behavior.
-                    taskCompletionSource = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+                    taskCompletionSource = new TaskCompletionSource(
+                        TaskCreationOptions.RunContinuationsAsynchronously
+                    );
                     StopProcessingFlags.Add(instance, taskCompletionSource);
                 }
             }

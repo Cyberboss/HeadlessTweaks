@@ -168,7 +168,8 @@ namespace HeadlessTweaks
         public static readonly ModConfigurationKey<bool> DisableInteractivePrompt = new(
             "DisableInteractivePrompt",
             "Disables interactive console command behavior. Useful if you have no direct stdin access to your executable (i.e. systemd/Windows service). Requires a restart to take effect",
-            () => false);
+            () => false
+        );
 
         public override void OnEngineInit()
         {
