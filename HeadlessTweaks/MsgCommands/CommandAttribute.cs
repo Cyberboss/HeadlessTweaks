@@ -11,6 +11,7 @@ namespace HeadlessTweaks
         // PermissionLevel: The permission level required to use the command
         // Alliases: The aliases of the command
         // Usage: The arguments of the command
+        // WorldScoped: If world scoped perms are used. Execution will be granted based on the users max permission level across worlds. Method MUST check CheckWorldPermission for the target worlds for the user before actioning itself.
 
         [AttributeUsage(AttributeTargets.Method)]
         public class CommandAttribute(
@@ -19,7 +20,8 @@ namespace HeadlessTweaks
             string category,
             PermissionLevel permissionLevel = PermissionLevel.None,
             string[] aliases = null,
-            string usage = null
+            string usage = null,
+            bool worldScoped = false
         ) : Attribute
         {
             public string Name { get; set; } = name;
@@ -28,6 +30,7 @@ namespace HeadlessTweaks
             public PermissionLevel PermissionLevel { get; set; } = permissionLevel;
             public string[] Aliases { get; set; } = aliases ?? [];
             public string Usage { get; set; } = usage;
+            public bool WorldScoped { get; set; } = worldScoped;
         }
     }
 }

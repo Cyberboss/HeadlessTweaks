@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Elements.Quantity;
+
 using FrooxEngine;
+
 using SkyFrost.Base;
 
 namespace HeadlessTweaks
@@ -20,7 +23,8 @@ namespace HeadlessTweaks
                 "List users in a world",
                 "World Management",
                 PermissionLevel.Moderator,
-                usage: "[?world name...]"
+                usage: "[?world name...]",
+                worldScoped: true
             )]
             public static void Users(UserMessages userMessages, Message msg, string[] args)
             {
@@ -72,7 +76,8 @@ namespace HeadlessTweaks
                 "Saves a world",
                 "World Management",
                 PermissionLevel.Moderator,
-                usage: "[?world name...]"
+                usage: "[?world name...]",
+                worldScoped: true
             )]
             public static async Task SaveWorld(
                 UserMessages userMessages,
@@ -325,7 +330,8 @@ namespace HeadlessTweaks
                 "Set role for a user in a world",
                 "World Management",
                 PermissionLevel.Administrator,
-                usage: "[user] [role name] [?world name...]"
+                usage: "[user] [role name] [?world name...]",
+                worldScoped: true
             )]
             public static async Task Role(UserMessages userMessages, Message msg, string[] args)
             {
@@ -603,7 +609,8 @@ namespace HeadlessTweaks
                 "Close a world",
                 "World Management",
                 PermissionLevel.Moderator,
-                usage: "[?world name...]"
+                usage: "[?world name...]",
+                worldScoped: true
             )]
             public static async Task CloseWorld(
                 UserMessages userMessages,
@@ -667,7 +674,8 @@ namespace HeadlessTweaks
                 "Set the access level of a session",
                 "World Management",
                 PermissionLevel.Moderator,
-                usage: "[access level] [?hidden] [?world name...]"
+                usage: "[access level] [?hidden] [?world name...]",
+                worldScoped: true
             )]
             public static void SetSessionAccessLevel(
                 UserMessages userMessages,
@@ -732,7 +740,8 @@ namespace HeadlessTweaks
                 "Sets whether the session should be hidden from listing or not",
                 "World Management",
                 PermissionLevel.Moderator,
-                usage: "[hidden] [?world name...]"
+                usage: "[hidden] [?world name...]",
+                worldScoped: true
             )]
             public static void HideFromListing(
                 UserMessages userMessages,
@@ -794,7 +803,8 @@ namespace HeadlessTweaks
                 "World Management",
                 PermissionLevel.Moderator,
                 aliases: ["setWorldName", "worldName", "sessionName"],
-                usage: "[?target world...]"
+                usage: "[?target world...]",
+                worldScoped: true
             )]
             public static async Task SetSessionName(
                 UserMessages userMessages,

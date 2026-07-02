@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+
 using Elements.Core;
+
 using FrooxEngine;
+
 using SkyFrost.Base;
+
 using static ResoniteModLoader.ResoniteMod;
 
 namespace HeadlessTweaks
@@ -122,7 +126,11 @@ namespace HeadlessTweaks
                             _ = userMessages.SendTextMessage("Unknown command");
                             break;
                         }
-                        if (cmdAttr.PermissionLevel > GetUserMaxPermissionLevel(message.SenderId))
+
+                        var permissionLevelToCheck = cmdAttr.WorldScoped
+                            ? GetUserMaxPermissionLevel(message.SenderId)
+                            : GetUserPermissionLevel(message.SenderId);
+                        if (cmdAttr.PermissionLevel > permissionLevelToCheck)
                         {
                             _ = userMessages.SendTextMessage(
                                 "You do not have permission to use that command."
