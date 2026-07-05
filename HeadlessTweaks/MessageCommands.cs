@@ -178,7 +178,7 @@ namespace HeadlessTweaks
 
                     Msg($"Handling invite request from {inviteRequest.UsernameToInvite}: UserIdToInvite: {inviteRequest.UserIdToInvite}, RequestingFromUserId: {inviteRequest.RequestingFromUserId}");
 
-                    var worlds = Engine.Current.WorldManager.Worlds;
+                    var worlds = Engine.Current.WorldManager.Worlds.Where(x => !x.IsUserspace());
 
                     bool sentOrbMessage = false;
                     foreach (var world in worlds)

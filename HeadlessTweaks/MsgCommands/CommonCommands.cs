@@ -150,7 +150,7 @@ namespace HeadlessTweaks
             )]
             public static void ReqInvite(UserMessages userMessages, Message msg, string[] args)
             {
-                var worlds = Engine.Current.WorldManager.Worlds;
+                var worlds = Engine.Current.WorldManager.Worlds.Where(x => !x.IsUserspace());
                 if (args.Length < 1)
                 {
                     goto Invite;
