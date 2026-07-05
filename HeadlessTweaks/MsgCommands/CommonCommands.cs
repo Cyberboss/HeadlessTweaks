@@ -139,7 +139,7 @@ namespace HeadlessTweaks
 
             [Command(
                 "reqInvite",
-                "Requests an invite to a world",
+                "Requests an invite to one or more worlds",
                 "Common",
                 PermissionLevel.None,
                 aliases: ["requestInvite"],
@@ -147,25 +147,19 @@ namespace HeadlessTweaks
             )]
             public static void ReqInvite(UserMessages userMessages, Message msg, string[] args)
             {
-                World world = null;
+                var worlds = Engine.Current.WorldManager.Worlds;
                 if (args.Length < 1)
                 {
-                    world = Engine.Current.WorldManager.FocusedWorld;
                     goto Invite;
                 }
 
                 string worldName = string.Join(" ", args).Trim();
 
-                var worlds = Engine.Current.WorldManager.Worlds.Where(w =>
-                    w != Userspace.UserspaceWorld
-                );
-
-                world = worlds
+                worlds = worlds
                     .Where(w =>
                         w.RawName == worldName || w.Name == worldName || w.SessionId == worldName
-                    )
-                    .FirstOrDefault();
-                if (world == null)
+                    );
+                if (!worlds.Any())
                 {
                     // Prioritize index over partial search
                     if (int.TryParse(worldName, out var result))
@@ -176,39 +170,49 @@ namespace HeadlessTweaks
                             _ = userMessages.SendTextMessage($"World index {result} out of range");
                             return;
                         }
-                        world = worldList[result];
+                        worlds = new List<World> { worldList[result] };
                     }
                     else
                     { // Do a partial match
                         // Todo maybe sort matches to the closest match?
-                        world = worlds
+                        worlds = worlds
                             .Where(w =>
                                 w.RawName.Contains(
                                     worldName,
                                     StringComparison.InvariantCultureIgnoreCase
                                 )
-                            )
-                            .FirstOrDefault();
+                            );
                     }
                 }
 
-                if (world == null)
+                if (!worlds.Any())
                 {
                     _ = userMessages.SendTextMessage(
                         $"No world found with the name \"{worldName}\""
                     );
                     return;
                 }
-                Invite:
 
+                Invite:
+                bool anyJoined = false;
+                foreach (var world in worlds)
+                {
                 // check if user can join world
                 if (!CanUserJoin(world, msg.SenderId, false))
+                    {
+                        _ = userMessages.SendTextMessage($"You can't join this world");
+                        continue;
+                    }
+
+                    anyJoined = true;
+                    world.AllowUserToJoin(msg.SenderId);
+                    _ = userMessages.SendInviteMessage(world.GenerateSessionInfo());
+                }
+
+                if (!anyJoined)
                 {
                     _ = userMessages.SendTextMessage($"You can't join this world");
-                    return;
                 }
-                world.AllowUserToJoin(msg.SenderId);
-                _ = userMessages.SendInviteMessage(world.GenerateSessionInfo());
             }
 
             // Get session orb
