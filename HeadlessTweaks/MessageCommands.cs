@@ -183,6 +183,11 @@ namespace HeadlessTweaks
                     bool sentOrbMessage = false;
                     foreach (var world in worlds)
                     {
+                        if (inviteRequest.ForSessionId != null && world.SessionId != inviteRequest.ForSessionId)
+                        {
+                            continue;
+                        }
+
                         // check if user can join world
                         var requestorIsAllowed = CanUserJoin(world, inviteRequest.UserIdToInvite, true);
                         if (requestorIsAllowed || (!String.IsNullOrWhiteSpace(inviteRequest.RequestingFromUserId) && CanUserJoin(world, inviteRequest.RequestingFromUserId, true)))
