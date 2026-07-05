@@ -176,10 +176,6 @@ namespace HeadlessTweaks
 
                     var inviteRequest = message.ExtractContent<InviteRequest>();
 
-                    // Skip if it was forwarded to the headless for a specific world
-                    if (inviteRequest.ForSessionId != null)
-                        break;
-
                     Msg($"Handling invite request from {inviteRequest.UsernameToInvite}: UserIdToInvite: {inviteRequest.UserIdToInvite}, RequestingFromUserId: {inviteRequest.RequestingFromUserId}");
 
                     var worlds = Engine.Current.WorldManager.Worlds;
