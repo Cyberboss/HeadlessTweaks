@@ -191,6 +191,20 @@ namespace HeadlessTweaks
             return world;
         }
 
+        private static void GenerateAndSendSessionOrb(World world, UserMessages userMessages, string userId)
+        {
+            world.RunSynchronously(async () =>
+            {
+                var orb = world.GetOrb(true);
+                var a = await userMessages.SendObjectMessage(
+                    orb,
+                    OfficialAssets.Graphics.Icons.Dash.Worlds
+                );
+                if (a)
+                    world.AllowUserToJoin(userId);
+            });
+        }
+
         private static async Task<World> CommandWorldSetup(
             UserMessages userMessages,
             WorldStartupParameters startInfo

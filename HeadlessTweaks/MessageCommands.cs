@@ -188,21 +188,36 @@ namespace HeadlessTweaks
 
                     var worlds = Engine.Current.WorldManager.Worlds;
 
+                    bool sentOrbMessage = false;
                     foreach (var world in worlds)
                     {
-                    // check if user can join world
-                    if (CanUserJoin(world, inviteRequest.UserIdToInvite, true))
-                    {
-                        // Should probably change to await userMessages.CreateInviteMessage(world);
-                        world.AllowUserToJoin(inviteRequest.UserIdToInvite);
-                        await userMessages.SendInviteMessage(world.GenerateSessionInfo());
-                    }
-                    else
-                    {
-                        Msg(
-                            $"User is not allowed to join {world.RawName}, forwarding to admins in the world"
-                        );
-                        await userMessages.ForwardInviteRequestToAdmins(inviteRequest, world);
+                        // check if user can join world
+                        var requestorIsAllowed = CanUserJoin(world, inviteRequest.UserIdToInvite, true);
+                        if (requestorIsAllowed || (!String.IsNullOrWhiteSpace(inviteRequest.RequestingFromUserId) && CanUserJoin(world, inviteRequest.RequestingFromUserId, true)))
+                        {
+                            // Should probably change to await userMessages.CreateInviteMessage(world);
+                            if (requestorIsAllowed)
+                            {
+                                world.AllowUserToJoin(inviteRequest.UserIdToInvite);
+                                await userMessages.SendInviteMessage(world.GenerateSessionInfo());
+                            }
+                            else
+                            {
+                                if (!sentOrbMessage)
+                                {
+                                    await userMessages.SendTextMessage("User is not a contact of the headless, you will have to send them the session orb(s)");
+                                    sentOrbMessage = true;
+                                }
+
+                                GenerateAndSendSessionOrb(world, userMessages, inviteRequest.UserIdToInvite);
+                            }
+                        }
+                        else
+                        {
+                            Msg(
+                                $"User is not allowed to join {world.RawName}, forwarding to admins in the world"
+                            );
+                            await userMessages.ForwardInviteRequestToAdmins(inviteRequest, world);
                         }
                     }
                     break;
