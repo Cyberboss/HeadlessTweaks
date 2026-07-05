@@ -202,19 +202,10 @@ namespace HeadlessTweaks
                             {
                                 if (!sentOrbMessage)
                                 {
-                                    await userMessages.SendTextMessage("User is not a contact of the headless, you will have to send them the session orb(s)");
+                                    await userMessages.SendTextMessage("User is not a contact of the headless. They have been allowed into the world. You will have to send them the session orb");
                                     sentOrbMessage = true;
                                 }
-
-                                GenerateAndSendSessionOrb(world, userMessages, inviteRequest.UserIdToInvite);
                             }
-                        }
-                        else
-                        {
-                            Msg(
-                                $"User is not allowed to join {world.RawName}, forwarding to admins in the world"
-                            );
-                            await userMessages.ForwardInviteRequestToAdmins(inviteRequest, world);
                         }
                     }
                     break;

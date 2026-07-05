@@ -218,33 +218,6 @@ namespace HeadlessTweaks
                 }
             }
 
-            // Get session orb
-            // Usage: /getSessionOrb [?world name...]
-            // If no world name is given, it will get the session orb of the user's world
-
-            [Command("getSessionOrb", "Get session orb", "Common", usage: "[?world name...]")]
-            public static void GetSessionOrb(UserMessages userMessages, Message msg, string[] args)
-            {
-                // Get world by name or user world
-                World world = GetWorldOrUserWorld(
-                    userMessages,
-                    string.Join(" ", args),
-                    msg.SenderId
-                );
-                if (world == null)
-                    return;
-
-                // check if user can join world
-                if (!CanUserJoin(world, msg.SenderId, false))
-                {
-                    _ = userMessages.SendTextMessage($"You can't join world \"{world.Name}\"");
-                    return;
-                }
-
-                _ = userMessages.SendTextMessage($"Getting world orb for \"{world.Name}\"");
-                GenerateAndSendSessionOrb(world, userMessages, msg.SenderId);
-            }
-
             // List worlds
             // Usage: /worlds
 
