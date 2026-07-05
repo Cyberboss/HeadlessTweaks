@@ -184,10 +184,12 @@ namespace HeadlessTweaks
                     if (message.SenderId != inviteRequest.UserIdToInvite)
                         break;
 
-                    var world = Engine.Current.WorldManager.FocusedWorld;
-
                     Msg($"Handling invite request from {inviteRequest.UsernameToInvite}");
 
+                    var worlds = Engine.Current.WorldManager.Worlds;
+
+                    foreach (var world in worlds)
+                    {
                     // check if user can join world
                     if (CanUserJoin(world, inviteRequest.UserIdToInvite, true))
                     {
@@ -201,6 +203,7 @@ namespace HeadlessTweaks
                             $"User is not allowed to join {world.RawName}, forwarding to admins in the world"
                         );
                         await userMessages.ForwardInviteRequestToAdmins(inviteRequest, world);
+                        }
                     }
                     break;
             }
