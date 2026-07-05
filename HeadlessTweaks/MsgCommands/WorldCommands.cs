@@ -32,8 +32,7 @@ namespace HeadlessTweaks
                 World world = GetWorldOrUserWorld(
                     userMessages,
                     string.Join(" ", args),
-                    msg.SenderId,
-                    true
+                    msg.SenderId
                 );
                 if (world == null)
                     return;
@@ -360,7 +359,7 @@ namespace HeadlessTweaks
                 ;
 
                 // Get the world
-                var world = GetWorldOrUserWorld(userMessages, worldName, userId, true);
+                var world = GetWorldOrUserWorld(userMessages, worldName, userId);
                 if (world == null)
                     return;
                 if (
@@ -628,7 +627,7 @@ namespace HeadlessTweaks
                 var worldName = string.Join(" ", args);
 
                 // Get the users world or focused world
-                var world = GetWorldOrUserWorld(userMessages, worldName, msg.SenderId, true);
+                var world = GetWorldOrUserWorld(userMessages, worldName, msg.SenderId);
                 if (world == null)
                     return;
                 if (
@@ -710,7 +709,7 @@ namespace HeadlessTweaks
                 var worldName = string.Join(" ", args.Skip(hiddenParsed ? 2 : 1));
 
                 // Get the users world or focused world
-                var world = GetWorldOrUserWorld(userMessages, worldName, msg.SenderId, false);
+                var world = GetWorldOrUserWorld(userMessages, worldName, msg.SenderId);
                 if (world == null)
                     return;
                 if (
@@ -770,7 +769,7 @@ namespace HeadlessTweaks
                 var worldName = string.Join(" ", args.Skip(1));
 
                 // Get the users world or focused world
-                var world = GetWorldOrUserWorld(userMessages, worldName, msg.SenderId, false);
+                var world = GetWorldOrUserWorld(userMessages, worldName, msg.SenderId);
                 if (world == null)
                     return;
                 if (
@@ -816,7 +815,7 @@ namespace HeadlessTweaks
                 var worldName = string.Join(" ", args).Trim();
 
                 // Get the users world or focused world
-                var world = GetWorldOrUserWorld(userMessages, worldName, msg.SenderId, false);
+                var world = GetWorldOrUserWorld(userMessages, worldName, msg.SenderId);
                 if (world == null)
                     return;
                 if (

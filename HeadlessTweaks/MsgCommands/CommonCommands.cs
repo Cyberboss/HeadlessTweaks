@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+
 using FrooxEngine;
+
 using SkyFrost.Base;
 
 namespace HeadlessTweaks
@@ -193,12 +196,12 @@ namespace HeadlessTweaks
                     return;
                 }
 
-                Invite:
+            Invite:
                 bool anyJoined = false;
                 foreach (var world in worlds)
                 {
-                // check if user can join world
-                if (!CanUserJoin(world, msg.SenderId, false))
+                    // check if user can join world
+                    if (!CanUserJoin(world, msg.SenderId, false))
                     {
                         _ = userMessages.SendTextMessage($"You can't join this world");
                         continue;
@@ -226,8 +229,7 @@ namespace HeadlessTweaks
                 World world = GetWorldOrUserWorld(
                     userMessages,
                     string.Join(" ", args),
-                    msg.SenderId,
-                    true
+                    msg.SenderId
                 );
                 if (world == null)
                     return;
@@ -240,16 +242,7 @@ namespace HeadlessTweaks
                 }
 
                 _ = userMessages.SendTextMessage($"Getting world orb for \"{world.Name}\"");
-                world.RunSynchronously(async () =>
-                {
-                    var orb = world.GetOrb(true);
-                    var a = await userMessages.SendObjectMessage(
-                        orb,
-                        OfficialAssets.Graphics.Icons.Dash.Worlds
-                    );
-                    if (a)
-                        world.AllowUserToJoin(msg.SenderId);
-                });
+                GenerateAndSendSessionOrb(world, userMessages, msg.SenderId);
             }
 
             // List worlds

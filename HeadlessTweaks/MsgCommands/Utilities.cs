@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Elements.Core;
+
 using FrooxEngine;
+
 using HarmonyLib;
+
 using SkyFrost.Base;
 
 namespace HeadlessTweaks
@@ -116,7 +120,7 @@ namespace HeadlessTweaks
         {
             bool isContact = Engine.Current.Cloud.Contacts.IsContact(userId);
             bool isContactsOrAbove = world.AccessLevel >= SessionAccessLevel.Contacts;
-            return GetUserPermissionLevel(userId) > PermissionLevel.None
+            return GetUserPermissionLevelForWorld(userId, world) > PermissionLevel.None
                 || (checkIsAllowed && world.IsUserAllowed(userId))
                 || (isContact && isContactsOrAbove);
         }
@@ -158,8 +162,7 @@ namespace HeadlessTweaks
         private static World GetWorldOrUserWorld(
             UserMessages userMessages,
             string worldName,
-            string userId,
-            bool defaultFocused = false
+            string userId
         )
         {
             World world = null;
@@ -178,12 +181,13 @@ namespace HeadlessTweaks
 
                 if (world == null)
                 { // if no world found tell the user
-                    if (!defaultFocused)
+                    if (Engine.Current.WorldManager.WorldCount > 1)
                     {
                         userMessages.SendTextMessage("User is not in a world");
                         return null;
                     }
-                    world = Engine.Current.WorldManager.FocusedWorld;
+
+                    return Engine.Current.WorldManager.FocusedWorld;
                 }
                 return world;
             }
@@ -264,6 +268,7 @@ namespace HeadlessTweaks
                 handler.Config,
                 startInfo
             );
+
             try
             {
                 await newWorld.Start();
