@@ -180,11 +180,7 @@ namespace HeadlessTweaks
                     if (inviteRequest.ForSessionId != null)
                         break;
 
-                    // Only continue if the sender is the requester
-                    if (message.SenderId != inviteRequest.UserIdToInvite)
-                        break;
-
-                    Msg($"Handling invite request from {inviteRequest.UsernameToInvite}");
+                    Msg($"Handling invite request from {inviteRequest.UsernameToInvite}: UserIdToInvite: {inviteRequest.UserIdToInvite}, RequestingFromUserId: {inviteRequest.RequestingFromUserId}");
 
                     var worlds = Engine.Current.WorldManager.Worlds;
 
