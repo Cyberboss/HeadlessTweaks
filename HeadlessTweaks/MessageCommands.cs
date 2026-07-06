@@ -193,9 +193,9 @@ namespace HeadlessTweaks
                         if (requestorIsAllowed || (!String.IsNullOrWhiteSpace(inviteRequest.RequestingFromUserId) && CanUserJoin(world, inviteRequest.RequestingFromUserId, true)))
                         {
                             // Should probably change to await userMessages.CreateInviteMessage(world);
+                            world.AllowUserToJoin(inviteRequest.UserIdToInvite);
                             if (requestorIsAllowed)
                             {
-                                world.AllowUserToJoin(inviteRequest.UserIdToInvite);
                                 await userMessages.SendInviteMessage(world.GenerateSessionInfo());
                             }
                             else
