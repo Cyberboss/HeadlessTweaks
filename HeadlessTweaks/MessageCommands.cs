@@ -109,6 +109,15 @@ namespace HeadlessTweaks
             switch (message.MessageType)
             {
                 case SkyFrost.Base.MessageType.Text:
+                    if (message.SenderId == Engine.Current.Cloud.Contacts.Platform.AppUserId)
+                    {
+                        var text = message.Content.Trim();
+                        if (text.StartsWith("Build") && text.EndsWith("released!"))
+                        {
+                            HeadlessTweaks.SystemdSend("WATCHDOG=trigger");
+                        }
+                    }
+
                     if (message.Content.StartsWith('/'))
                     {
                         var args = StringHelper.ParseArguments(message.Content);

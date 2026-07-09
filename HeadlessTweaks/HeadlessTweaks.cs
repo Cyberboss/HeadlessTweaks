@@ -1,8 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
+using System.Text;
+
 using Elements.Core;
+
+using FrooxEngine;
+
 using HarmonyLib;
+
 using ResoniteModLoader;
+
 using SkyFrost.Base;
 
 namespace HeadlessTweaks
@@ -215,6 +223,34 @@ namespace HeadlessTweaks
                 DisableInteractiveCommandLine.Init(harmony);
             else
                 Debug("Not applying non-interactive command line patch");
+
+            Engine.Current.RunPostInit(() => SystemdSend("READY=1"));
+        }
+
+        public static void SystemdSend(string text)
+        {
+            string socketPath = Environment.GetEnvironmentVariable("NOTIFY_SOCKET");
+            if (string.IsNullOrEmpty(socketPath)) return;
+
+            // Abstract namespace sockets start with '@'
+            if (socketPath.StartsWith("@"))
+            {
+                socketPath = "\0" + socketPath.Substring(1);
+            }
+
+            try
+            {
+                var endPoint = new UnixDomainSocketEndPoint(socketPath);
+                using (var client = new Socket(AddressFamily.Unix, SocketType.Dgram, ProtocolType.Unspecified))
+                {
+                    byte[] buffer = Encoding.ASCII.GetBytes(text);
+                    client.SendTo(buffer, endPoint);
+                }
+            }
+            catch (Exception ex)
+            {
+                Error($"Failed to send sd_notify message \"{text}\": {ex}");
+            }
         }
     }
 }
