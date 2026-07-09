@@ -242,6 +242,14 @@ namespace HeadlessTweaks
             }
 
             // Shutdown Headless
+            [Command("serviceRestart", "Restart Systemd Service", "Headless Management", PermissionLevel.Owner)]
+            public static async Task TriggerSystemdWatchdog(UserMessages userMessages, Message msg, string[] args)
+            {
+                await userMessages.SendTextMessage($"Sending WATCHDOG=trigger");
+                HeadlessTweaks.SystemdSend("WATCHDOG=trigger");
+            }
+
+            // Shutdown Headless
             [Command("shutdown", "Shutdown Headless", "Headless Management", PermissionLevel.Owner)]
             public static async Task ShutDown(UserMessages userMessages, Message msg, string[] args)
             {
