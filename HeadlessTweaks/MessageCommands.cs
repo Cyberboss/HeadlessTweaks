@@ -115,6 +115,7 @@ namespace HeadlessTweaks
                         if (text.StartsWith("Build") && text.EndsWith("released!"))
                         {
                             HeadlessTweaks.SystemdSend("WATCHDOG=trigger");
+                            return;
                         }
                     }
 
