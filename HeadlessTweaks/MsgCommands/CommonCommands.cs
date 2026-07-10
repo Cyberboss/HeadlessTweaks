@@ -241,12 +241,11 @@ namespace HeadlessTweaks
                 _ = messages.Send();
             }
 
-            // Shutdown Headless
-            [Command("serviceRestart", "Restart Systemd Service", "Headless Management", PermissionLevel.Owner)]
+            [Command("syncStatus", "Report remaining records and asset variants to sync", "Headless Management", PermissionLevel.Moderator)]
             public static async Task TriggerSystemdWatchdog(UserMessages userMessages, Message msg, string[] args)
             {
-                await userMessages.SendTextMessage($"Sending WATCHDOG=trigger");
-                HeadlessTweaks.SystemdSend("WATCHDOG=trigger");
+                var manager = Engine.Current.RecordManager;
+                await userMessages.SendTextMessage($"Records: {manager.SyncingRecordsCount}, Asset Variants: {manager.UploadingVariantsCount}");
             }
 
             // Shutdown Headless
