@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 
-using Elements.Core;
-
 using FrooxEngine;
 
 using HarmonyLib;
@@ -26,73 +24,6 @@ namespace HeadlessTweaks
         public static bool isDiscordLoaded = false;
 
         public static ModConfiguration config;
-
-        [AutoRegisterConfigKey]
-        public static readonly ModConfigurationKey<bool> UseDiscordWebhook = new(
-            "UseDiscordWebhook",
-            "Use Discord Webhook",
-            () => false
-        );
-
-        [AutoRegisterConfigKey]
-        public static readonly ModConfigurationKey<string> DiscordWebhookID = new(
-            "DiscordWebhookID",
-            "Discord Webhook ID",
-            () => null
-        );
-
-        [AutoRegisterConfigKey]
-        public static readonly ModConfigurationKey<string> DiscordWebhookKey = new(
-            "DiscordWebhookKey",
-            "Discord Webhook Key",
-            () => null
-        );
-
-        [AutoRegisterConfigKey]
-        public static readonly ModConfigurationKey<string> DiscordWebhookUsername = new(
-            "DiscordWebhookUsername",
-            "Discord Webhook Username",
-            () => null
-        );
-
-        [AutoRegisterConfigKey]
-        public static readonly ModConfigurationKey<string> DiscordWebhookAvatar = new(
-            "DiscordWebhookAvatar",
-            "Discord Webhook Avatar",
-            () => null
-        );
-
-        [AutoRegisterConfigKey]
-        public static readonly ModConfigurationKey<ulong?> DiscordWebhookThreadID = new(
-            "DiscordWebhookThreadID",
-            "Optional Discord Webhook Thread ID",
-            () => null
-        );
-
-        [AutoRegisterConfigKey]
-        public static readonly ModConfigurationKey<
-            Dictionary<DiscordIntegration.DiscordEvents, bool>
-        > DiscordWebhookEnabledEvents = new(
-            "DiscordWebhookEnabledEvents",
-            "Enabled Discord webhook events",
-            () => new() { { DiscordIntegration.DiscordEvents.EngineStart, false } }
-        );
-
-        [AutoRegisterConfigKey]
-        public static readonly ModConfigurationKey<
-            Dictionary<DiscordIntegration.DiscordEvents, colorX>
-        > DiscordWebhookEventColors = new(
-            "DiscordWebhookEventColors",
-            "Discord webhook event colors",
-            () => []
-        );
-
-        [AutoRegisterConfigKey]
-        public static readonly ModConfigurationKey<bool> DiscordLinkToSession = new(
-            "DiscordLinkToSession",
-            "Add a link to open the session in the discord session started message",
-            () => true
-        );
 
         [AutoRegisterConfigKey]
         public static readonly ModConfigurationKey<List<string>> AutoInviteOptOutList = new(
@@ -186,26 +117,6 @@ namespace HeadlessTweaks
 
             config.Save(true);
             Harmony harmony = new("page.newweb.HeadlessTweaks");
-
-            // Check if the Discord namespace exists
-            // If it does, we can assume that the Discord.NET library is installed
-            // and we can init the Discord client
-            if (config.GetValue(UseDiscordWebhook))
-            {
-                isDiscordLoaded =
-                    Type.GetType("Discord.Webhook.DiscordWebhookClient, Discord.Net.Webhook")
-                    != null;
-
-                if (isDiscordLoaded)
-                {
-                    Msg("Discord.NET library found");
-                    DiscordIntegration.Init(harmony);
-                }
-                else
-                    Warn(
-                        "Discord.NET library not found, but the UseDiscordWebhook option is enabled. Please put the Discord.NET library dlls in rml_libs to use this feature."
-                    );
-            }
 
             // If we are not loaded by a headless client skip the rest
             if (!ModLoader.IsHeadless)

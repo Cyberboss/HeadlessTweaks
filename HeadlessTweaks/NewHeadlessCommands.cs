@@ -1,6 +1,7 @@
 ﻿using System;
-using FrooxEngine;
+
 using FrooxEngine.Headless;
+
 using HarmonyLib;
 
 namespace HeadlessTweaks
@@ -61,33 +62,6 @@ namespace HeadlessTweaks
                     }
                 )
             );
-
-            if (
-                HeadlessTweaks.config.GetValue(HeadlessTweaks.UseDiscordWebhook)
-                && HeadlessTweaks.isDiscordLoaded
-            )
-            {
-                handler.RegisterCommand(
-                    new GenericCommand(
-                        "sendToDiscord",
-                        "Sends a message to discord",
-                        "<message>",
-                        (h, world, args) =>
-                        {
-                            if (args.Count == 0)
-                            {
-                                HeadlessTweaks.Warn("Please include a message");
-                                return;
-                            }
-
-                            DiscordIntegration.DiscordHelper.SendEmbed(
-                                string.Join(" ", [.. args]),
-                                RadiantUI_Constants.Hero.PURPLE
-                            );
-                        }
-                    )
-                );
-            }
         }
     }
 }

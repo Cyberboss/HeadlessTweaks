@@ -34,9 +34,7 @@
     <DebugType Condition="'$(Configuration)'=='Release'">None</DebugType>
 
     <!-- Include Nuget packages in output -->
-    <CopyLocalLockFileAssemblies Condition="$(CopyDiscordToLib) And $(CopyToMods)"
-      >true</CopyLocalLockFileAssemblies
-    >
+    <CopyLocalLockFileAssemblies Condition="$(CopyDiscordToLib) And $(CopyToMods)">true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
@@ -48,39 +46,23 @@
   <PropertyGroup>
     <AppPath>$(MSBuildThisFileDirectory)$(AppName)/</AppPath>
     <AppPath Condition="Exists('F:\Windows\')">F:\Windows\</AppPath>
-    <AppPath Condition="Exists('E:\SteamLibrary\steamapps\common\$(AppName)')"
-      >E:\SteamLibrary\steamapps\common\$(AppName)\</AppPath
-    >
-    <AppPath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\$(AppName)\')"
-      >C:\Program Files (x86)\Steam\steamapps\common\$(AppName)\</AppPath
-    >
-    <AppPath Condition="Exists('$(HOME)/.steam/steam/steamapps/common/$(AppName)/')"
-      >$(HOME)/.steam/steam/steamapps/common/$(AppName)/</AppPath
-    >
-    <AppPath Condition="Exists('$(HOME)/.local/share/Steam/steamapps/common/$(AppName)/')"
-      >$(HOME)/.local/share/Steam/steamapps/common/$(AppName)/</AppPath
-    >
+    <AppPath Condition="Exists('E:\SteamLibrary\steamapps\common\$(AppName)')">E:\SteamLibrary\steamapps\common\$(AppName)\</AppPath>
+    <AppPath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\$(AppName)\')">C:\Program Files (x86)\Steam\steamapps\common\$(AppName)\</AppPath>
+    <AppPath Condition="Exists('$(HOME)/.steam/steam/steamapps/common/$(AppName)/')">$(HOME)/.steam/steam/steamapps/common/$(AppName)/</AppPath>
+    <AppPath Condition="Exists('$(HOME)/.local/share/Steam/steamapps/common/$(AppName)/')">$(HOME)/.local/share/Steam/steamapps/common/$(AppName)/</AppPath>
 
     <HeadlessPath>$(MSBuildThisFileDirectory)$(AppName)/Headless/</HeadlessPath>
     <HeadlessPath Condition="Exists('$(AppPath)FrooxEngine.dll')">$(AppPath)</HeadlessPath>
     <HeadlessPath Condition="Exists('$(AppPath)Headless/')">$(AppPath)Headless/</HeadlessPath>
-    <HeadlessPath Condition="Exists('$(AppPath)Tools/Headless/')"
-      >$(AppPath)Tools/Headless/</HeadlessPath
-    >
+    <HeadlessPath Condition="Exists('$(AppPath)Tools/Headless/')">$(AppPath)Tools/Headless/</HeadlessPath>
     <HeadlessPath Condition="Exists('E:\Resonite\Headless\')">E:\Resonite\Headless\</HeadlessPath>
 
     <HeadlessData>$(HeadlessPath)</HeadlessData>
-    <HeadlessData Condition="Exists('$(HeadlessPath)Windows/Headless/')"
-      >$(HeadlessPath)Windows/Headless/</HeadlessData
-    >
-    <HeadlessData Condition="Exists('$(HeadlessPath)Resonite/Headless/')"
-      >$(HeadlessPath)Resonite/Headless/</HeadlessData
-    >
+    <HeadlessData Condition="Exists('$(HeadlessPath)Windows/Headless/')">$(HeadlessPath)Windows/Headless/</HeadlessData>
+    <HeadlessData Condition="Exists('$(HeadlessPath)Resonite/Headless/')">$(HeadlessPath)Resonite/Headless/</HeadlessData>
 
     <!-- Relative path to executable from HeadlessPath -->
-    <HeadlessExecutableDir Condition="Exists('$(HeadlessPath)Resonite/')"
-      >Resonite/Headless/</HeadlessExecutableDir
-    >
+    <HeadlessExecutableDir Condition="Exists('$(HeadlessPath)Resonite/')">Resonite/Headless/</HeadlessExecutableDir>
 
     <ModLibrariesPath>$(HeadlessPath)$(ModLoaderShort)_libs/</ModLibrariesPath>
     <ModsPath>$(HeadlessPath)$(ModLoaderShort)_mods/</ModsPath>
@@ -88,7 +70,7 @@
 
   <ItemGroup>
     <!-- Referencing Webhook will also reference Core and Rest -->
-    <PackageReference Include="Discord.Net.Webhook" Version="3.18.0" />
+    <PackageReference Include="ResoniteModLoader" Version="5.0.1" />
   </ItemGroup>
 
   <ItemDefinitionGroup>
@@ -99,12 +81,6 @@
   </ItemDefinitionGroup>
 
   <ItemGroup>
-    <Reference Include="HarmonyLib">
-      <HintPath>$(ModLibrariesPath)0Harmony.dll</HintPath>
-      <HintPath Condition="Exists('$(HeadlessPath)0Harmony.dll')"
-        >$(HeadlessPath)0Harmony.dll</HintPath
-      >
-    </Reference>
     <Reference Include="Elements.Core">
       <HintPath>$(HeadlessData)Elements.Core.dll</HintPath>
     </Reference>
@@ -130,28 +106,10 @@
       <HintPath>$(HeadlessData)Renderite.Shared.dll</HintPath>
     </Reference>
     <Reference Include="$(AppName)">
-      <HintPath>$(HeadlessPath)$(AppName).exe</HintPath>
-      <HintPath Condition="Exists('$(HeadlessData)$(AppName).exe')"
-        >$(HeadlessData)$(AppName).exe</HintPath
-      >
-      <HintPath Condition="Exists('$(HeadlessPath)$(AppName).dll')"
-        >$(HeadlessPath)$(AppName).dll</HintPath
-      >
-      <HintPath Condition="Exists('$(HeadlessData)$(AppName).dll')"
-        >$(HeadlessData)$(AppName).dll</HintPath
-      >
-    </Reference>
-    <Reference Include="$(AppName)ModLoader">
-      <HintPath>$(HeadlessPath)$(AppName)ModLoader.dll</HintPath>
-      <HintPath Condition="Exists('$(HeadlessPath)Libraries/$(AppName)ModLoader.dll')"
-        >$(HeadlessPath)Libraries/$(AppName)ModLoader.dll</HintPath
-      >
-      <HintPath Condition="Exists('$(AppPath)Libraries/$(AppName)ModLoader.dll')"
-        >$(AppPath)Libraries/$(AppName)ModLoader.dll</HintPath
-      >
+      <HintPath>$(HeadlessData)$(AppName).dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>$(HeadlessPath)Newtonsoft.Json.dll</HintPath>
+      <HintPath>$(HeadlessData)Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
 
@@ -160,19 +118,11 @@
     <Message Text="Copied $(TargetFileName) to $(ModsPath)" Importance="high" />
   </Target>
 
-  <Target
-    Name="CopyDiscordLibs"
-    AfterTargets="PostBuild"
-    Condition="$(CopyDiscordToLib) And $(CopyToMods)"
-  >
+  <Target Name="CopyDiscordLibs" AfterTargets="PostBuild" Condition="$(CopyDiscordToLib) And $(CopyToMods)">
     <ItemGroup>
       <DiscordLibraries Include="$(TargetDir)Discord.Net.*.dll" />
     </ItemGroup>
-    <Copy
-      SourceFiles="@(DiscordLibraries)"
-      DestinationFolder="$(ModLibrariesPath)"
-      SkipUnchangedFiles="true"
-    />
+    <Copy SourceFiles="@(DiscordLibraries)" DestinationFolder="$(ModLibrariesPath)" SkipUnchangedFiles="true" />
     <Message Text="Copied DiscordNet Libraries to $(ModLibrariesPath)" Importance="high" />
   </Target>
 </Project>
