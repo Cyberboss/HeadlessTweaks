@@ -7,7 +7,7 @@
     <CopyToMods Condition="'$(CopyToMods)' == '' AND '$(Configuration)' == 'Debug'">true</CopyToMods>
   </PropertyGroup>
 
-  <PropertyGroup >
+  <PropertyGroup Condition="'$(ResonitePath)'==''">
     <ResonitePath>C:\Program Files (x86)\Steam\steamapps\common\Resonite\Headless\</ResonitePath>
   </PropertyGroup>
 
