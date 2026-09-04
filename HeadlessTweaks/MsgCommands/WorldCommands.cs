@@ -126,7 +126,7 @@ namespace HeadlessTweaks
                         {
                             _ = userMessages.SendTextMessage($"Starting world \"{worldName}\"");
                             var headlessConfig = (HeadlessConfig)Assembly.GetEntryAssembly().GetType("FrooxEngine.Headless.Program").GetField("config", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
-                            await new WorldHandler(Engine.Current, headlessConfig, startInfo2).Start().ConfigureAwait(continueOnCapturedContext: false);
+                            _ = new WorldHandler(Engine.Current, headlessConfig, startInfo2).Start();
                         }
                         else
                         {
