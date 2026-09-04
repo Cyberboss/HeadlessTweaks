@@ -1,7 +1,9 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+
 using FrooxEngine.Headless;
+
 using HarmonyLib;
 
 namespace HeadlessTweaks
@@ -58,6 +60,7 @@ namespace HeadlessTweaks
         /// <returns><see langword="false"/> to prevent the original implementation from running.</returns>
         static bool ProcessCommandsPrefix(CommandHandler __instance, ref Task __result)
         {
+            HeadlessTweaks.SystemdSend("READY=1");
             HeadlessTweaks.Msg("Interative command line requested, skipping...");
             if (!GetOrCreateTcs(__instance, out var flag))
                 HeadlessTweaks.Error(

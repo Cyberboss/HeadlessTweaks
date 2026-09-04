@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 
-using FrooxEngine;
-
 using HarmonyLib;
 
 using ResoniteModLoader;
@@ -134,8 +132,6 @@ namespace HeadlessTweaks
                 DisableInteractiveCommandLine.Init(harmony);
             else
                 Debug("Not applying non-interactive command line patch");
-
-            Engine.Current.RunPostInit(() => SystemdSend("READY=1"));
         }
 
         public static void SystemdSend(string text)
