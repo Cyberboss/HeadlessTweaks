@@ -155,7 +155,7 @@ namespace HeadlessTweaks
                 var worldList = worlds.ToList();
                 if (result < 0 || result >= worldList.Count)
                 {
-                    userMessages.SendTextMessage("World index out of range");
+                    userMessages?.SendTextMessage("World index out of range");
                     return null;
                 }
                 world = worldList[result];
@@ -169,7 +169,7 @@ namespace HeadlessTweaks
 
             if (world == null)
             {
-                userMessages.SendTextMessage("No world found with the name " + worldName);
+                userMessages?.SendTextMessage("No world found with the name " + worldName);
                 return null;
             }
             return world;
@@ -201,7 +201,7 @@ namespace HeadlessTweaks
                 { // if no world found tell the user
                     if (Engine.Current.WorldManager.WorldCount > 1)
                     {
-                        userMessages.SendTextMessage("User is not in a world");
+                        userMessages?.SendTextMessage("User is not in a world");
                         return null;
                     }
 

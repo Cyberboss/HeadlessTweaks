@@ -86,9 +86,15 @@ namespace HeadlessTweaks
             )
             {
                 string worldName = string.Join(" ", args).Trim();
+                if (String.IsNullOrWhiteSpace(worldName))
+                {
+                    _ = userMessages.SendTextMessage($"Enter a headless config session name!");
+                    return;
+                }
+
                 StringRenderTree stringRenderTree = new StringRenderTree(worldName);
                 var rawWorldName = stringRenderTree.GetRawString();
-                World world = GetWorldOrUserWorld(userMessages, worldName, msg.SenderId) ?? GetWorldOrUserWorld(userMessages, rawWorldName, msg.SenderId);
+                World world = GetWorldOrUserWorld(null, worldName, msg.SenderId) ?? GetWorldOrUserWorld(null, rawWorldName, msg.SenderId);
                 if (world != null)
                 {
                     _ = userMessages.SendTextMessage($"\"{world.Name}\" is already online!");
@@ -109,7 +115,9 @@ namespace HeadlessTweaks
                 {
                     foreach (WorldStartupParameters startInfo2 in headlessConfig.StartWorlds)
                     {
-                        if (startInfo2.SessionName != worldName && startInfo2.SessionName != rawWorldName)
+                        StringRenderTree stringRenderTree2 = new StringRenderTree(worldName);
+                        var rawStartInfoWorldName = stringRenderTree.GetRawString();
+                        if (startInfo2.SessionName != worldName && rawStartInfoWorldName != rawWorldName)
                         {
                             continue;
                         }
