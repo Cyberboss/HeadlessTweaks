@@ -110,10 +110,10 @@ namespace HeadlessTweaks
                 )
                     return;
 
-                var headlessConfig = (HeadlessConfig)Assembly.GetEntryAssembly().GetType("FrooxEngine.Headless.Program").GetField("config", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
-                if (headlessConfig.StartWorlds != null)
+                var startWorlds = HeadlessTweaks.StartWorlds;
+                if (startWorlds != null)
                 {
-                    foreach (WorldStartupParameters startInfo2 in headlessConfig.StartWorlds)
+                    foreach (WorldStartupParameters startInfo2 in startWorlds)
                     {
                         StringRenderTree stringRenderTree2 = new StringRenderTree(worldName);
                         var rawStartInfoWorldName = stringRenderTree.GetRawString();
@@ -125,6 +125,7 @@ namespace HeadlessTweaks
                         if (startInfo2.IsEnabled)
                         {
                             _ = userMessages.SendTextMessage($"Starting world \"{worldName}\"");
+                            var headlessConfig = (HeadlessConfig)Assembly.GetEntryAssembly().GetType("FrooxEngine.Headless.Program").GetField("config", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
                             await new WorldHandler(Engine.Current, headlessConfig, startInfo2).Start().ConfigureAwait(continueOnCapturedContext: false);
                         }
                         else

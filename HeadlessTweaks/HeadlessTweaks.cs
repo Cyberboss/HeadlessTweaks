@@ -1,7 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
+
+using FrooxEngine;
+using FrooxEngine.Headless;
 
 using HarmonyLib;
 
@@ -20,6 +25,8 @@ namespace HeadlessTweaks
             "https://github.com/New-Project-Final-Final-WIP/HeadlessTweaks";
 
         public static bool isDiscordLoaded = false;
+
+        public static List<WorldStartupParameters> StartWorlds { get; private set; }
 
         public static ModConfiguration config;
 
@@ -132,6 +139,12 @@ namespace HeadlessTweaks
                 DisableInteractiveCommandLine.Init(harmony);
             else
                 Debug("Not applying non-interactive command line patch");
+
+            Engine.Current.RunPostInit(() =>
+            {
+                var headlessConfig = (HeadlessConfig)Assembly.GetEntryAssembly().GetType("FrooxEngine.Headless.Program").GetField("config", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
+                StartWorlds = headlessConfig.StartWorlds?.ToList();
+            });
         }
 
         public static void SystemdSend(string text)
