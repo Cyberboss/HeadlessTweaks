@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 using Elements.Assets;
 using Elements.Quantity;
 
 using FrooxEngine;
-using FrooxEngine.Headless;
 
 using SkyFrost.Base;
 
@@ -124,9 +122,7 @@ namespace HeadlessTweaks
 
                         if (startInfo2.IsEnabled)
                         {
-                            _ = userMessages.SendTextMessage($"Starting world \"{worldName}\"");
-                            var headlessConfig = (HeadlessConfig)Assembly.GetEntryAssembly().GetType("FrooxEngine.Headless.Program").GetField("config", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
-                            _ = new WorldHandler(Engine.Current, headlessConfig, startInfo2).Start();
+                            await CommandWorldSetup(userMessages, startInfo2);
                         }
                         else
                         {
