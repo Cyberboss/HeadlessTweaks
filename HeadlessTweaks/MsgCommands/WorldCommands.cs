@@ -110,7 +110,7 @@ namespace HeadlessTweaks
                 )
                     return;
 
-                var headlessConfig = (HeadlessConfig)Assembly.GetEntryAssembly().GetType("Program").GetField("config", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
+                var headlessConfig = (HeadlessConfig)Assembly.GetEntryAssembly().GetType("FrooxEngine.Headless.Program").GetField("config", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
                 if (headlessConfig.StartWorlds != null)
                 {
                     foreach (WorldStartupParameters startInfo2 in headlessConfig.StartWorlds)
