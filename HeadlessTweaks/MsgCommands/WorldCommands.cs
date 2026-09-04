@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
+using Elements.Assets;
 using Elements.Quantity;
 
 using FrooxEngine;
+using FrooxEngine.Headless;
 
 using SkyFrost.Base;
 
@@ -64,6 +67,70 @@ namespace HeadlessTweaks
                     messages.Add(usrMsg);
                 }
                 _ = messages.Send();
+            }
+
+            // Start a world from the headless config
+
+            [Command(
+                "startWorldConfig",
+                "Starts a world from the headless config",
+                "World Management",
+                PermissionLevel.Moderator,
+                usage: "[?world name...]",
+                worldScoped: true
+            )]
+            public static async Task StartWorldConfig(
+                UserMessages userMessages,
+                Message msg,
+                string[] args
+            )
+            {
+                string worldName = string.Join(" ", args).Trim();
+                StringRenderTree stringRenderTree = new StringRenderTree(worldName);
+                var rawWorldName = stringRenderTree.GetRawString();
+                World world = GetWorldOrUserWorld(userMessages, worldName, msg.SenderId) ?? GetWorldOrUserWorld(userMessages, rawWorldName, msg.SenderId);
+                if (world != null)
+                {
+                    _ = userMessages.SendTextMessage($"\"{world.Name}\" is already online!");
+                    return;
+                }
+                if (
+                    !CheckWorldPermission(
+                        userMessages,
+                        msg.SenderId,
+                        worldName,
+                        PermissionLevel.Moderator
+                    )
+                )
+                    return;
+
+                var headlessConfig = (HeadlessConfig)Assembly.GetEntryAssembly().GetType("Program").GetField("config", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
+                if (headlessConfig.StartWorlds != null)
+                {
+                    foreach (WorldStartupParameters startInfo2 in headlessConfig.StartWorlds)
+                    {
+                        if (startInfo2.SessionName != worldName && startInfo2.SessionName != rawWorldName)
+                        {
+                            continue;
+                        }
+
+                        if (startInfo2.IsEnabled)
+                        {
+                            _ = userMessages.SendTextMessage($"Starting world \"{worldName}\"");
+                            await new WorldHandler(Engine.Current, headlessConfig, startInfo2).Start().ConfigureAwait(continueOnCapturedContext: false);
+                        }
+                        else
+                        {
+                            _ = userMessages.SendTextMessage($"\"{worldName}\" is disabled!");
+                        }
+
+                        return;
+                    }
+                }
+
+                _ = userMessages.SendTextMessage(
+                    $"Could not find world {worldName} in the headless config!"
+                );
             }
 
             // Save world

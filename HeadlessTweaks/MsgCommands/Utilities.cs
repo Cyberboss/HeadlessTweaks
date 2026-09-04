@@ -42,12 +42,15 @@ namespace HeadlessTweaks
         }
 
         private static PermissionLevel GetUserPermissionLevelForWorld(string userId, World world)
+            => GetUserPermissionLevelForWorld(userId, world.RawName);
+
+        private static PermissionLevel GetUserPermissionLevelForWorld(string userId, string worldRawName)
         {
             var globalLevel = GetUserPermissionLevel(userId);
             var worldScoped = HeadlessTweaks.WorldScopedPermissions.GetValue();
             if (
                 worldScoped.TryGetValue(userId, out var scopedWorlds)
-                && scopedWorlds.TryGetValue(world.RawName, out var scopedLevel)
+                && scopedWorlds.TryGetValue(worldRawName, out var scopedLevel)
                 && scopedLevel > globalLevel
             )
                 return scopedLevel;
@@ -65,6 +68,21 @@ namespace HeadlessTweaks
                 return true;
             _ = userMessages.SendTextMessage(
                 $"You do not have permission to manage world \"{world.Name}\"."
+            );
+            return false;
+        }
+
+        private static bool CheckWorldPermission(
+            UserMessages userMessages,
+            string senderId,
+            string worldRawName,
+            PermissionLevel requiredLevel
+        )
+        {
+            if (GetUserPermissionLevelForWorld(senderId, worldRawName) >= requiredLevel)
+                return true;
+            _ = userMessages.SendTextMessage(
+                $"You do not have permission to manage world \"{worldRawName}\"."
             );
             return false;
         }
