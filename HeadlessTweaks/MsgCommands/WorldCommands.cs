@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Elements.Assets;
+using Elements.Core;
 using Elements.Quantity;
 
 using FrooxEngine;
@@ -170,6 +172,32 @@ namespace HeadlessTweaks
                     )
                 )
                     return;
+
+                var rootSlot = world.RootSlot;
+                if (!rootSlot.ForeachComponentInChildren<FrooxEngine.Comment>(
+                    comment =>
+                    {
+                        var commentText = comment.Text.Value;
+                        if (commentText.Contains("#CYBERSERVERMKII_DONOTSAVE", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Stack<Slot> slotStack = new Stack<Slot>();
+                            Slot current = comment.Slot;
+                            do
+                            {
+                                slotStack.Push(current);
+                            }
+                            while (current != rootSlot);
+
+                            _ = userMessages.SendTextMessage(
+                                $"World save blocked by Comment on {String.Join(" -> ", slotStack.Select(slot => slot.Name))}: {commentText}");
+                            return false;
+                        }
+
+                        return true;
+                    }))
+                {
+                    return;
+                }
 
                 _ = userMessages.SendTextMessage($"Starting save for world \"{world.Name}\"");
                 var currentTime = DateTime.Now;
