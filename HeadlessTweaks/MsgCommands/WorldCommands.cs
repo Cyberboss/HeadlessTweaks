@@ -182,11 +182,13 @@ namespace HeadlessTweaks
                         {
                             Stack<Slot> slotStack = new Stack<Slot>();
                             Slot current = comment.Slot;
-                            do
+                            while (current != rootSlot)
                             {
                                 slotStack.Push(current);
+                                current = current.Parent;
                             }
-                            while (current != rootSlot);
+
+                            slotStack.Push(current);
 
                             _ = userMessages.SendTextMessage(
                                 $"World save blocked by Comment on {String.Join(" -> ", slotStack.Select(slot => slot.Name))}: {commentText}");
